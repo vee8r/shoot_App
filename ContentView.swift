@@ -8,17 +8,38 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showingImagePicker = false
+    @State private var inputImage: UIImage?
+    @State private var sourceType: UIImagePickerController.SourceType = .camera
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello!")
+        NavigationView {
+            VStack {
+                if let inputImage = inputImage {
+                    Image(uiImage: inputImage)
+                        .resizable()
+                        .scaledToFit()
+                }
+
+                Button("Open Camera") {
+                    self.sourceType = .camera
+                    showingImagePicker = true
+                }
+                .padding()
+
+                Button("Select Image from Gallery") {
+                    self.sourceType = .photoLibrary
+                    showingImagePicker = true
+                }
+                .padding()
+            }
+            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
+                ImagePicker(image: $inputImage, sourceType: sourceType)
+            }
         }
-        .padding()
+    }
+
+    func loadImage() {
     }
 }
 
-#Preview {
-    ContentView()
-}
