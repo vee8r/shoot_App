@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var showingImagePicker = false
+    @State private var showingCameraPicker = false
+    @State private var showingGalleryPicker = false
     @State private var inputImage: UIImage?
-    @State private var sourceType: UIImagePickerController.SourceType = .camera
 
     var body: some View {
         NavigationView {
@@ -22,19 +22,20 @@ struct ContentView: View {
                 }
 
                 Button("Open Camera") {
-                    self.sourceType = .camera
-                    showingImagePicker = true
+                    self.showingCameraPicker = true
                 }
                 .padding()
+                .sheet(isPresented: $showingCameraPicker, onDismiss: loadImage) {
+                    ImagePicker(image: $inputImage, sourceType: .camera)
+                }
 
                 Button("Select Image from Gallery") {
-                    self.sourceType = .photoLibrary
-                    showingImagePicker = true
+                    self.showingGalleryPicker = true
                 }
                 .padding()
-            }
-            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
-                ImagePicker(image: $inputImage, sourceType: sourceType)
+                .sheet(isPresented: $showingGalleryPicker, onDismiss: loadImage) {
+                    ImagePicker(image: $inputImage, sourceType: .photoLibrary)
+                }
             }
         }
     }
@@ -42,4 +43,5 @@ struct ContentView: View {
     func loadImage() {
     }
 }
+
 

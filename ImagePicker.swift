@@ -19,7 +19,12 @@ struct ImagePicker: UIViewControllerRepresentable {
         return picker
     }
 
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+        if uiViewController.sourceType != sourceType {
+            uiViewController.sourceType = sourceType
+            print("Updated sourceType to: \(sourceType)")
+        }
+    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
