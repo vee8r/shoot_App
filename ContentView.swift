@@ -15,11 +15,15 @@ struct ContentView: View {
     @State private var totalShots = 0
     @State private var detectedShots = 0
     @State private var detectedCircles: [CGRect] = []
-    
+
     var body: some View {
         NavigationView {
             VStack {
                 if showStatistics, let inputImage = inputImage {
+                    let imageWithCircles = ShotDetector().drawCircles(on: inputImage, circles: detectedCircles)
+                    Image(uiImage: imageWithCircles ?? inputImage)
+                        .resizable()
+                        .scaledToFit()
                     StatisticsView(image: inputImage, bulletCount: detectedShots, totalShots: totalShots, detectedCircles: detectedCircles)
                 } else {
                     if let inputImage = inputImage {
@@ -69,6 +73,7 @@ struct ContentView: View {
         return ShotDetector().detectShots(in: image).count
     }
 }
+
 
 
 
