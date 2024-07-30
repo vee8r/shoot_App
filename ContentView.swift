@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct ContentView: View {
     @State private var showingCameraPicker = false
     @State private var showingGalleryPicker = false
@@ -16,17 +14,21 @@ struct ContentView: View {
     @State private var showStatistics = false
     @State private var totalShots = 0
     @State private var detectedShots = 0
+    @State private var detectedCircles: [CGRect] = []
     
     var body: some View {
         NavigationView {
             VStack {
                 if showStatistics, let inputImage = inputImage {
-                    StatisticsView(image: inputImage, bulletCount: detectedShots, totalShots: totalShots)
+                    StatisticsView(image: inputImage, bulletCount: detectedShots, totalShots: totalShots, detectedCircles: detectedCircles)
                 } else {
                     if let inputImage = inputImage {
                         Image(uiImage: inputImage)
                             .resizable()
                             .scaledToFit()
+                            .onAppear {
+                                self.detectedCircles = ShotDetector().detectShots(in: inputImage)
+                            }
                     }
                     
                     Button("Open Camera") {
@@ -50,7 +52,6 @@ struct ContentView: View {
                             .keyboardType(.numberPad)
                             .padding()
                     }
-
                 }
             }
         }
@@ -58,14 +59,14 @@ struct ContentView: View {
     
     func loadImage() {
         if let image = inputImage {
-            detectedShots = detectShots(in: image)
+            self.detectedCircles = ShotDetector().detectShots(in: image)
+            detectedShots = detectedCircles.count
             showStatistics = true
         }
     }
 
     func detectShots(in image: UIImage) -> Int {
-        // Logika do wykrywania strzałów
-        return 0 // Tymczasowe
+        return ShotDetector().detectShots(in: image).count
     }
 }
 
